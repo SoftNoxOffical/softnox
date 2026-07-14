@@ -217,6 +217,15 @@ function PhoneContact({ telefon }: { telefon: string }) {
   );
 }
 
+/* Maps linkinin q parametresindeki adresi okunabilir metin olarak döndürür */
+function mapsAddress(url: string): string {
+  try {
+    const q = new URL(url).searchParams.get("q");
+    if (q) return q.trim();
+  } catch { /* geçersiz URL */ }
+  return "Google Maps";
+}
+
 const BADGE_COLORS: Record<string, string> = {
   "Olumlu": "#4ade80", "Olumsuz": "#f87171", "Devam Ediyor": "#60a5fa", "Beklemede": "#fbbf24",
 };
@@ -748,9 +757,9 @@ export default function AdminCRM({ profile, initialContacts }: { profile: Profil
                         )}
                         {c.google_maps_url && (
                           <a href={c.google_maps_url} target="_blank" rel="noopener noreferrer"
-                            style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#34d399", fontSize: 12, textDecoration: "none" }}>
-                            <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                            Google Maps
+                            style={{ display: "inline-flex", alignItems: "flex-start", gap: 6, color: "#34d399", fontSize: 12, textDecoration: "none" }}>
+                            <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span style={{ wordBreak: "break-word" }}>{mapsAddress(c.google_maps_url)}</span>
                           </a>
                         )}
                         {c.website_url && (
@@ -843,7 +852,7 @@ export default function AdminCRM({ profile, initialContacts }: { profile: Profil
                 {detail.telefon && <DetailRow label="Telefon" value={detail.telefon} color="#fbbf24" />}
                 {detail.email && <DetailRow label="E-posta" value={detail.email} color="#a78bfa" />}
                 {detail.website_url && <DetailRow label="Web Sitesi" value={detail.website_url} color="#60a5fa" />}
-                {detail.google_maps_url && <DetailRow label="Google Maps" value="Haritada Gör" href={detail.google_maps_url} color="#34d399" />}
+                {detail.google_maps_url && <DetailRow label="Konum" value={mapsAddress(detail.google_maps_url)} href={detail.google_maps_url} color="#34d399" />}
                 {detail.iletisim_tarihi && <DetailRow label="İletişim Tarihi" value={fmtDate(detail.iletisim_tarihi)} />}
                 {detail.sonuc && <DetailRow label="Sonuç" value={detail.sonuc} badge />}
                 {(detail.alinan_ucret != null) && <DetailRow label="Alınan Ücret" value={fmt(detail.alinan_ucret, detail.alinan_para_birimi)} color="#4ade80" />}
